@@ -5,6 +5,7 @@ pub struct StakingPool {
   pub owner :  Pubkey,
   pub name: String,
   pub totalStaked: u64,
+  pub usernumbers: u64,
 }
 
 //User State
