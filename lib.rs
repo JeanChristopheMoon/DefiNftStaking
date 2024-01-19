@@ -1,12 +1,54 @@
+use anchor_lang::prelude::*;
+
+declare_id!("x");
+
 #[program]
-pub mod simple_defi {
-    use super::*;
+mod simple_defi {
+    use super::*;        
 
-pub fn initializing(ctx: Context<initilize>,usernumbers: u64,totalStaked: u64){
-pub initilizngstake: &mut StakingPool = &mut ctx.accounts.staking_pool;
-
-staking_pool.usernumbers = usernumbers;
-staking_pool.totalStaked = totalStaked;
+    pub fn initialize(ctx: Context<Initializer>, usernumbers: u64, totalstaked: u64) {
+        //let initializing_stake: &mut System = &mut ctx.accounts.staking_pool;
+        let initializing_stake: &mut System = &mut ctx.accounts.system_program;
 
 
+        initializing_stake.usernumbers = usernumbers;
+        initializing_stake.totalstaked = totalstaked;
+    }
+
+    // Accounts
+
+    // StakingPool State
+    pub struct System {
+        pub owner: Pubkey,
+        pub name: String,
+        pub totalstaked: u64,
+        pub usernumbers: u64,
+    }
+
+    // User State
+    #[account]
+    pub struct User {
+        pub owner: Pubkey,
+        pub name: String,
+        pub amount: u64,
+    }
+
+    // User Dashboard State
+    #[account]
+    pub struct Dashboard {
+        pub owner: Pubkey,
+        pub name: String,
+        pub total_staked: u64,
+    }
+
+    // Contexts
+    #[derive(Accounts)]
+    pub struct Initializer<'info> {
+        #[account(mut)]
+        pub owner: Signer<'info>,
+        // Corrected: Use the correct account type
+        #[account(init, payer = owner, space = 8 + 180)]
+        pub system_program: Program<'info, System>,
+        // change Account to the Program since it gives error! Why? ( Question for Practice:D)
+    }
 }
