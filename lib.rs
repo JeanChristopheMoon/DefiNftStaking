@@ -17,6 +17,20 @@ mod simple_defi {
         Ok(())
     }
 
+    //Adding account capable of minting Nfts 
+    pub fn initialize_account(
+    token_program_id: &Pubkey,
+    account_pubkey: &Pubkey,
+    mint_pubkey: &Pubkey,
+    owner_pubkey: &Pubkey
+) -> Result<Instruction, ProgramError> {
+
+
+
+
+
+    }
+
     // Accounts
 
     // StakingPool State
