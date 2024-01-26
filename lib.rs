@@ -17,15 +17,34 @@ mod simple_defi {
         Ok(())
     }
 
-    //Adding account capable of minting Nfts 
-    pub fn initialize_account(
-    token_program_id: &Pubkey,
-    account_pubkey: &Pubkey,
-    mint_pubkey: &Pubkey,
-    owner_pubkey: &Pubkey
-) -> Result<Instruction, ProgramError> {
-
-
+    //Adding minting account capable of minting Nfts 
+    pub fn initialize_mint(
+        token_program_id: &Pubkey,
+        mint_pubkey: &Pubkey,
+        mint_authority_pubkey: &Pubkey,
+        freeze_authority_pubkey: Option<&Pubkey>,
+        decimals: u8,
+    ) -> Result<Instruction, ProgramError> {
+        check_program_account(token_program_id)?;
+        let freeze_authority = freeze_authority_pubkey.cloned().into();
+        let data = TokenInstruction::InitializeMint {
+            mint_authority: *mint_authority_pubkey,
+            freeze_authority,
+            decimals,
+        }
+        .pack();
+    
+        let accounts = vec![
+            AccountMeta::new(*mint_pubkey, false),
+            AccountMeta::new_readonly(sysvar::rent::id(), false),
+        ];
+    
+        Ok(Instruction {
+            program_id: *token_program_id,
+            accounts,
+            data,
+        })
+    }
 
 
 
