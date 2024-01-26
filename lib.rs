@@ -17,7 +17,7 @@ mod simple_defi {
         Ok(())
     }
 
-    //Adding minting account capable of minting Nfts 
+    //Adding "minting account" capable of minting Nfts 
     pub fn initialize_mint(
         token_program_id: &Pubkey,
         mint_pubkey: &Pubkey,
@@ -46,6 +46,29 @@ mod simple_defi {
         })
     }
 
+    /// Adding a "Token Account"
+pub fn initialize_account(
+    token_program_id: &Pubkey,
+    account_pubkey: &Pubkey,
+    mint_pubkey: &Pubkey,
+    owner_pubkey: &Pubkey,
+) -> Result<Instruction, ProgramError> {
+    check_program_account(token_program_id)?;
+    let data = TokenInstruction::InitializeAccount.pack();
+
+    let accounts = vec![
+        AccountMeta::new(*account_pubkey, false),
+        AccountMeta::new_readonly(*mint_pubkey, false),
+        AccountMeta::new_readonly(*owner_pubkey, false),
+        AccountMeta::new_readonly(sysvar::rent::id(), false),
+    ];
+
+    Ok(Instruction {
+        program_id: *token_program_id,
+        accounts,
+        data,
+    })
+}
 
 
     }
