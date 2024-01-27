@@ -32,6 +32,7 @@ mod simple_defi {
         let freeze_authority = freeze_authority_pubkey.cloned().into();
         //Creating instace of InitializeMint operation from TokenInstruction enum
         let data = TokenInstruction::InitializeMint {
+            //from enum variant and its data type
             mint_authority: *mint_authority_pubkey,
             freeze_authority,
             decimals,
