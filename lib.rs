@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-// Need to reconsideration
+// Need to reconsideration with more details
 use solana_program::instruction::Instruction;
 use spl_token::instruction as token_instruction;
 
