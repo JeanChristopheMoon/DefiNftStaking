@@ -46,6 +46,30 @@ mod simple_defi {
         })
     }
 
+        /// Adding a "Token Account"
+pub fn initialize_account(
+    token_program_id: &Pubkey,
+    account_pubkey: &Pubkey,
+    mint_pubkey: &Pubkey,
+    owner_pubkey: &Pubkey,
+) -> Result<Instruction, ProgramError> {
+    check_program_account(token_program_id)?;
+    let data = TokenInstruction::InitializeAccount.pack();
+
+    let accounts = vec![
+        AccountMeta::new(*account_pubkey, false),
+        AccountMeta::new_readonly(*mint_pubkey, false),
+        AccountMeta::new_readonly(*owner_pubkey, false),
+        AccountMeta::new_readonly(sysvar::rent::id(), false),
+    ];
+
+    Ok(Instruction {
+        program_id: *token_program_id,
+        accounts,
+        data,
+    })
+}
+
     /// Minting function after MintAccount and TokenAccount
 pub fn mint_to(
     token_program_id: &Pubkey,
@@ -76,29 +100,7 @@ pub fn mint_to(
     })
 }
 
-    /// Adding a "Token Account"
-pub fn initialize_account(
-    token_program_id: &Pubkey,
-    account_pubkey: &Pubkey,
-    mint_pubkey: &Pubkey,
-    owner_pubkey: &Pubkey,
-) -> Result<Instruction, ProgramError> {
-    check_program_account(token_program_id)?;
-    let data = TokenInstruction::InitializeAccount.pack();
 
-    let accounts = vec![
-        AccountMeta::new(*account_pubkey, false),
-        AccountMeta::new_readonly(*mint_pubkey, false),
-        AccountMeta::new_readonly(*owner_pubkey, false),
-        AccountMeta::new_readonly(sysvar::rent::id(), false),
-    ];
-
-    Ok(Instruction {
-        program_id: *token_program_id,
-        accounts,
-        data,
-    })
-}
 
 
     }
