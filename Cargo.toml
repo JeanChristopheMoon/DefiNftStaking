@@ -20,4 +20,5 @@ solana-program = "1.17.7"
 solana-frozen-abi = "1.17.7"
 anchor-lang = "0.29.0"
 mpl-candy-machine-core = "3.0.1"
+spl = "4.0.0"
 
