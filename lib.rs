@@ -27,6 +27,7 @@ mod simple_defi {
     ) -> Result<Instruction, ProgramError> {
         check_program_account(token_program_id)?;
         let freeze_authority = freeze_authority_pubkey.cloned().into();
+        //Creating instace of InitializeMint operation from TokenInstruction enum
         let data = TokenInstruction::InitializeMint {
             mint_authority: *mint_authority_pubkey,
             freeze_authority,
