@@ -5,6 +5,14 @@ use spl_token::instruction as token_instruction;
 
 declare_id!("x");
 
+// New function to check the program account
+pub fn check_program_account(spl_token_program_id: &Pubkey) -> ProgramResult {
+    if spl_token_program_id != &id() {
+        return Err(ProgramError::IncorrectProgramId);
+    }
+    Ok(())
+}
+
 #[program]
 mod simple_defi {
     use super::*;        
