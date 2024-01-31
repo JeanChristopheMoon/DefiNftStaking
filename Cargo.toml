@@ -5,9 +5,9 @@ description = "Created with Anchor"
 edition = "2018"
 
 [lib]
-crate-type = ["simple_defi"]
+crate-type = ["lib"]
 name = "lib"
-path = "src/lib.rs"
+path = "/Users/farshad/DefiNft/DefiNftStaking/lib.rs"
 
 [features]
 no-entrypoint = []
@@ -17,9 +17,9 @@ cpi = ["no-entrypoint"]
 default = []
 
 [dependencies]
-solana-program = "1.17.7" 
-solana-frozen-abi = "1.17.7"
+solana-program = "1.16.5" 
+solana-frozen-abi = "1.16.5"
 anchor-lang = "0.29.0"
 mpl-candy-machine-core = "3.0.1"
-spl = "4.0.0"
+spl = "0.0.1"
 
