@@ -119,6 +119,20 @@ mod simple_defi {
         pub totalstaked: u64,
         pub usernumbers: u64,
     }
+    #[account]
+    pub struct NftCuoponMetadata {
+        pub owner: Pubkey,
+        pub restuarant_name: String,
+        pub buyers: Vec<u64>,
+        pub max_amount: u64,
+        pub min_amount: u64,
+        pub count: u64,
+        pub price: u64,
+        pub image: String,
+        pub description: String,
+    
+
+    }
 
     // // User State
     // #[account]
