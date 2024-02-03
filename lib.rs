@@ -33,83 +33,69 @@ mod simple_defi {
 
         ) -> Result<Instruction, ProgramError> {
             
-        check_program_account(token_program_id)?;
-        let freeze_authority = freeze_authority_pubkey.cloned().into();
-        //Creating instace of InitializeMint operation from TokenInstruction enum
-        let data = TokenInstruction::InitializeMint {
-            //from enum variant and its data type
-            mint_authority: *mint_authority_pubkey,
-            freeze_authority,
-            decimals,
-        }
-        .pack();
-    
-        let accounts = vec![
-            AccountMeta::new(*mint_pubkey, false),
-            AccountMeta::new_readonly(sysvar::rent::id(), false),
-        ];
-    
-        Ok(Instruction {
-            program_id: *token_program_id,
-            accounts,
-            data,
-        })
+        // Initialize the mint
+        let instruction = initialize_mint(
+            &token_program_id(&ctx).key(),
+            &mint_pubkey(&ctx).key(),
+            &mint_authority_pubkey(&ctx).key(),
+            None, // Optional freeze authority
+            decimals(&ctx),
+        )?;
+        invoke_signed(&instruction, &[
+            mint_account(&ctx).to_account_info(),
+            rent_sysvar::id(),
+        ])?;
     }
 
-        /// Adding a "Token Account"
-    pub fn initialize_account(
-        token_program_id: &Pubkey,
-        account_pubkey: &Pubkey,
-        mint_pubkey: &Pubkey,
-        owner_pubkey: &Pubkey,
-    ) -> Result<Instruction, ProgramError> {
-        check_program_account(token_program_id)?;
-        let data = TokenInstruction::InitializeAccount.pack();
-
-        let accounts = vec![
-            AccountMeta::new(*account_pubkey, false),
-            AccountMeta::new_readonly(*mint_pubkey, false),
-            AccountMeta::new_readonly(*owner_pubkey, false),
-            AccountMeta::new_readonly(sysvar::rent::id(), false),
-        ];
-
-        Ok(Instruction {
-            program_id: *token_program_id,
-            accounts,
-            data,
-        })
-    }
-
-        /// Minting function after MintAccount and TokenAccount
     pub fn mint_to(
         token_program_id: &Pubkey,
         mint_pubkey: &Pubkey,
         account_pubkey: &Pubkey,
         owner_pubkey: &Pubkey,
         signer_pubkeys: &[&Pubkey],
-        amount: u64,
-    ) -> Result<Instruction, ProgramError> {
-            check_program_account(token_program_id)?;
-            let data = TokenInstruction::MintTo { amount }.pack();
-
-            let mut accounts = Vec::with_capacity(3 + signer_pubkeys.len());
-            accounts.push(AccountMeta::new(*mint_pubkey, false));
-            accounts.push(AccountMeta::new(*account_pubkey, false));
-            accounts.push(AccountMeta::new_readonly(
-                *owner_pubkey,
-                signer_pubkeys.is_empty(),
-        ));
-        for signer_pubkey in signer_pubkeys.iter() {
-            accounts.push(AccountMeta::new_readonly(**signer_pubkey, true));
-        }
-
-        Ok(Instruction {
-            program_id: *token_program_id,
-            accounts,
-            data,
-        })
+        amount: u64
+    ) -> Result<Instruction, ProgramError>{
+        let instruction = mint_to(
+            &token_program_id(&ctx).key(),
+            &mint_pubkey(&ctx).key(),
+            &account_pubkey(&ctx).key(),
+            &owner_pubkey(&ctx).key(),
+            signer_pubkeys,
+            amount(&ctx),
+        )?;
+        invoke_signed(&instruction, &[
+            mint_account(&ctx).to_account_info(),
+            account_pubkey(&ctx).to_account_info(),
+            owner_pubkey(&ctx).to_account_info(),
+        ])?;
+        Ok(())
     }
-}
+        // Optionally initialize the target account if needed
+    pub fn initialize_account(
+        token_program_id: &Pubkey,
+        account_pubkey: &Pubkey,
+        mint_pubkey: &Pubkey,
+        owner_pubkey: &Pubkey
+    ) -> Result<Instruction, ProgramError>{
+        let instruction = initialize_account(
+            &token_program_id(&ctx).key(),
+            &account_pubkey(&ctx).key(),
+            &mint_pubkey(&ctx).key(),
+            &owner_pubkey(&ctx).key(),
+        )?;
+        invoke_signed(&instruction, &[
+            account_pubkey(&ctx).to_account_info(),
+            mint_account(&ctx).to_account_info(),
+            rent_sysvar::id(),
+        ])?;
+        Ok(())
+    }    
+}   
+
+// ... other instructions 
+
+
+
 
 
 
