@@ -26,7 +26,13 @@ mod simple_defi {
         mint_authority_pubkey: &Pubkey,
         freeze_authority_pubkey: Option<&Pubkey>,
         decimals: u8,
+        max_amount: u64,
+        min_amount: u64,
+        price: u64,
+        description: String
+
         ) -> Result<Instruction, ProgramError> {
+            
         check_program_account(token_program_id)?;
         let freeze_authority = freeze_authority_pubkey.cloned().into();
         //Creating instace of InitializeMint operation from TokenInstruction enum
