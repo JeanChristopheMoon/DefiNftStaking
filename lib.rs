@@ -22,7 +22,8 @@ mod simple_defi {
         max_amount: u64,
         count : u64,
         price: u64,
-        description: String
+        description: String,
+        release_threshold: u64
 
         ) -> Result<Instruction, ProgramError> {
             
