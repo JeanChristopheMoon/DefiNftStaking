@@ -34,11 +34,18 @@ mod simple_defi {
             &mint_authority_pubkey(&ctx).key(),
             None, // Optional freeze authority
             decimals(&ctx),
+
+            
         )?;
         invoke_signed(&instruction, &[
             mint_account(&ctx).to_account_info(),
             rent_sysvar::id(),
         ])?;
+
+        let coupon = &mut ctx.accounts.NftCuoponMetadata;
+        coupon.release_threshold = release_threshold;
+        coupon.count = count;
+
     }
 
     pub fn mint_to(
