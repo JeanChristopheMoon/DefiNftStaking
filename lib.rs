@@ -5,13 +5,6 @@ use spl_token::instruction as token_instruction;
 
 declare_id!("x");
 
-// New function to check the program account
-pub fn check_program_account(spl_token_program_id: &Pubkey) -> ProgramResult {
-    if spl_token_program_id != &id() {
-        return Err(ProgramError::IncorrectProgramId);
-    }
-    Ok(())
-}
 
 #[program]
 mod simple_defi {
@@ -27,7 +20,7 @@ mod simple_defi {
         freeze_authority_pubkey: Option<&Pubkey>,
         decimals: u8,
         max_amount: u64,
-        min_amount: u64,
+        count : u64,
         price: u64,
         description: String
 
@@ -89,6 +82,16 @@ mod simple_defi {
             rent_sysvar::id(),
         ])?;
         Ok(())
+
+
+    pub fn release_coupons(nft: Pubkey, name: String ) -> Result<Instruction, ProgramError>{
+        
+
+
+
+
+
+        Ok(())
     }    
 }   
 
@@ -117,11 +120,11 @@ mod simple_defi {
         pub restuarant_name: String,
         pub buyers: Vec<u64>,
         pub max_amount: u64,
-        pub min_amount: u64,
         pub count: u64,
         pub price: u64,
         pub image: String,
         pub description: String,
+        pub release_threshold: u64,
     
 
     }
