@@ -89,18 +89,38 @@ mod simple_defi {
             mint_account(&ctx).to_account_info(),
             rent_sysvar::id(),
         ])?;
-        Ok(())
+        Ok(());
 
 
-    pub fn release_coupons(nft: Pubkey, name: String ) -> Result<Instruction, ProgramError>{
-        
+    // Purchase Coupon function (handles purchasing portions of the NFT)
+    pub fn purchase_coupon(ctx: Context<PurchaseCoupon>) -> Result<()> {
+    // Access accounts
+    let purchase_count_account = &mut ctx.accounts.purchase_count;
+    let mint_account = &mut ctx.accounts.mint;
+    let token_program = ctx.accounts.token_program.clone();
+    let payer = &mut ctx.accounts.payer;
+    let vault = &mut ctx.accounts.vault;
 
+    // Calculate purchase price based on coupon amount and portion size
+    let portion_size = 1; // Adjust based on desired granularity
+    let purchase_price = mint_account.price / mint_account.coupon_amount * portion_size;
 
+    // Transfer tokens from payer to vault
+    token_program.transfer(
+        &ctx.accounts.token_program.key(),
+        payer.key(),
+        vault.key(),
+        purchase_price,
+    )?;
+    // Increment purchase count
+    purchase_count_account.purchase_count += portion_size;
 
-
-
-        Ok(())
-    }    
+    // Check for release threshold
+    if purchase_count_account.purchase_count >= mint_account.release_threshold {
+        release_coupons(ctx.accounts.mint.key())?;
+    }
+    Ok(())
+    }
 }   
 
 // ... other instructions 
@@ -137,6 +157,14 @@ mod simple_defi {
 
     }
 
+    #[account]
+    pub struct purchase_count {
+
+        purchase_count: u64,
+
+
+    }
+
     // // User State
     // #[account]
     // pub struct User {
@@ -164,4 +192,11 @@ mod simple_defi {
 
             pub system_program: Program<'info, System>,
             // change Account to the Program since it gives error! Why? ( Question for Practice:D)
+        }
+    #[derive(Accounts)]
+        pub struct PurchaseCoupon<'info> {
+        
+            pub payer: Signer<'info>
+    
+    
         }
